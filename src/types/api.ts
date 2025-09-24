@@ -1,0 +1,55 @@
+export interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  content: string;
+  likes: number;
+  likedBy: string[];
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  creator?: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
+  isLiked?: boolean;
+}
+
+export interface PostsResponse {
+  posts: Post[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface AuthResponse {
+  authenticated: boolean;
+  user?: User;
+}
+
+export interface LoginResponse {
+  token: string;
+}
+
+export interface RegisterResponse {
+  token: string;
+}

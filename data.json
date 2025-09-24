@@ -1,0 +1,341 @@
+{
+  "users": [
+    {
+      "id": "fb050ea5-a490-49fb-952c-7a4092997c9a",
+      "email": "sachingurjar8109@gmail.com",
+      "password": "D"
+    }
+  ],
+  "posts": [
+    {
+      "id": "1",
+      "title": "Sample Post 1",
+      "content": "This is the content of post 1.",
+      "likes": 25
+    },
+    {
+      "id": "2",
+      "title": "Sample Post 2",
+      "content": "This is the content of post 2.",
+      "likes": 10
+    },
+    {
+      "id": "3",
+      "title": "Sample Post 3",
+      "content": "This is the content of post 3.",
+      "likes": 0
+    },
+    {
+      "id": "4",
+      "title": "Sample Post 4",
+      "content": "This is the content of post 4.",
+      "likes": 19
+    },
+    {
+      "id": "5",
+      "title": "Sample Post 5",
+      "content": "This is the content of post 5.",
+      "likes": 11
+    },
+    {
+      "id": "6",
+      "title": "Sample Post 6",
+      "content": "This is the content of post 6.",
+      "likes": 10
+    },
+    {
+      "id": "7",
+      "title": "Sample Post 7",
+      "content": "This is the content of post 7.",
+      "likes": 21
+    },
+    {
+      "id": "8",
+      "title": "Sample Post 8",
+      "content": "This is the content of post 8.",
+      "likes": 29
+    },
+    {
+      "id": "9",
+      "title": "Sample Post 9",
+      "content": "This is the content of post 9.",
+      "likes": 20
+    },
+    {
+      "id": "10",
+      "title": "Sample Post 10",
+      "content": "This is the content of post 10.",
+      "likes": 6
+    },
+    {
+      "id": "11",
+      "title": "Sample Post 11",
+      "content": "This is the content of post 11.",
+      "likes": 17
+    },
+    {
+      "id": "12",
+      "title": "Sample Post 12",
+      "content": "This is the content of post 12.",
+      "likes": 18
+    },
+    {
+      "id": "13",
+      "title": "Sample Post 13",
+      "content": "This is the content of post 13.",
+      "likes": 10
+    },
+    {
+      "id": "14",
+      "title": "Sample Post 14",
+      "content": "This is the content of post 14.",
+      "likes": 2
+    },
+    {
+      "id": "15",
+      "title": "Sample Post 15",
+      "content": "This is the content of post 15.",
+      "likes": 24
+    },
+    {
+      "id": "16",
+      "title": "Sample Post 16",
+      "content": "This is the content of post 16.",
+      "likes": 4
+    },
+    {
+      "id": "17",
+      "title": "Sample Post 17",
+      "content": "This is the content of post 17.",
+      "likes": 29
+    },
+    {
+      "id": "18",
+      "title": "Sample Post 18",
+      "content": "This is the content of post 18.",
+      "likes": 23
+    },
+    {
+      "id": "19",
+      "title": "Sample Post 19",
+      "content": "This is the content of post 19.",
+      "likes": 23
+    },
+    {
+      "id": "20",
+      "title": "Sample Post 20",
+      "content": "This is the content of post 20.",
+      "likes": 17
+    },
+    {
+      "id": "21",
+      "title": "Sample Post 21",
+      "content": "This is the content of post 21.",
+      "likes": 0
+    },
+    {
+      "id": "22",
+      "title": "Sample Post 22",
+      "content": "This is the content of post 22.",
+      "likes": 29
+    },
+    {
+      "id": "23",
+      "title": "Sample Post 23",
+      "content": "This is the content of post 23.",
+      "likes": 9
+    },
+    {
+      "id": "24",
+      "title": "Sample Post 24",
+      "content": "This is the content of post 24.",
+      "likes": 9
+    },
+    {
+      "id": "25",
+      "title": "Sample Post 25",
+      "content": "This is the content of post 25.",
+      "likes": 24
+    },
+    {
+      "id": "26",
+      "title": "Sample Post 26",
+      "content": "This is the content of post 26.",
+      "likes": 18
+    },
+    {
+      "id": "27",
+      "title": "Sample Post 27",
+      "content": "This is the content of post 27.",
+      "likes": 1
+    },
+    {
+      "id": "28",
+      "title": "Sample Post 28",
+      "content": "This is the content of post 28.",
+      "likes": 22
+    },
+    {
+      "id": "29",
+      "title": "Sample Post 29",
+      "content": "This is the content of post 29.",
+      "likes": 21
+    },
+    {
+      "id": "30",
+      "title": "Sample Post 30",
+      "content": "This is the content of post 30.",
+      "likes": 1
+    },
+    {
+      "id": "31",
+      "title": "Sample Post 31",
+      "content": "This is the content of post 31.",
+      "likes": 15
+    },
+    {
+      "id": "32",
+      "title": "Sample Post 32",
+      "content": "This is the content of post 32.",
+      "likes": 17
+    },
+    {
+      "id": "33",
+      "title": "Sample Post 33",
+      "content": "This is the content of post 33.",
+      "likes": 21
+    },
+    {
+      "id": "34",
+      "title": "Sample Post 34",
+      "content": "This is the content of post 34.",
+      "likes": 10
+    },
+    {
+      "id": "35",
+      "title": "Sample Post 35",
+      "content": "This is the content of post 35.",
+      "likes": 26
+    },
+    {
+      "id": "36",
+      "title": "Sample Post 36",
+      "content": "This is the content of post 36.",
+      "likes": 28
+    },
+    {
+      "id": "37",
+      "title": "Sample Post 37",
+      "content": "This is the content of post 37.",
+      "likes": 22
+    },
+    {
+      "id": "38",
+      "title": "Sample Post 38",
+      "content": "This is the content of post 38.",
+      "likes": 23
+    },
+    {
+      "id": "39",
+      "title": "Sample Post 39",
+      "content": "This is the content of post 39.",
+      "likes": 5
+    },
+    {
+      "id": "40",
+      "title": "Sample Post 40",
+      "content": "This is the content of post 40.",
+      "likes": 28
+    },
+    {
+      "id": "41",
+      "title": "Sample Post 41",
+      "content": "This is the content of post 41.",
+      "likes": 12
+    },
+    {
+      "id": "42",
+      "title": "Sample Post 42",
+      "content": "This is the content of post 42.",
+      "likes": 16
+    },
+    {
+      "id": "43",
+      "title": "Sample Post 43",
+      "content": "This is the content of post 43.",
+      "likes": 16
+    },
+    {
+      "id": "44",
+      "title": "Sample Post 44",
+      "content": "This is the content of post 44.",
+      "likes": 0
+    },
+    {
+      "id": "45",
+      "title": "Sample Post 45",
+      "content": "This is the content of post 45.",
+      "likes": 16
+    },
+    {
+      "id": "46",
+      "title": "Sample Post 46",
+      "content": "This is the content of post 46.",
+      "likes": 27
+    },
+    {
+      "id": "47",
+      "title": "Sample Post 47",
+      "content": "This is the content of post 47.",
+      "likes": 18
+    },
+    {
+      "id": "48",
+      "title": "Sample Post 48",
+      "content": "This is the content of post 48.",
+      "likes": 15
+    },
+    {
+      "id": "49",
+      "title": "Sample Post 49",
+      "content": "This is the content of post 49.",
+      "likes": 7
+    },
+    {
+      "id": "50",
+      "title": "Sample Post 50",
+      "content": "This is the content of post 50.",
+      "likes": 13
+    },
+    {
+      "id": "51",
+      "title": "Sample Post 51",
+      "content": "This is the content of post 51.",
+      "likes": 21
+    },
+    {
+      "id": "52",
+      "title": "Sample Post 52",
+      "content": "This is the content of post 52.",
+      "likes": 28
+    },
+    {
+      "id": "53",
+      "title": "Sample Post 53",
+      "content": "This is the content of post 53.",
+      "likes": 20
+    },
+    {
+      "id": "54",
+      "title": "Sample Post 54",
+      "content": "This is the content of post 54.",
+      "likes": 12
+    },
+    {
+      "id": "55",
+      "title": "Sample Post 55",
+      "content": "This is the content of post 55.",
+      "likes": 28
+    }
+  ]
+}
