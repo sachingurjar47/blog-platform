@@ -7,6 +7,7 @@ import {
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
 import type { ApiError, Post, PostsResponse } from "../types/api";
+import type { EditorJSData } from "../types/editorjs";
 
 export const usePost = (id: string) => {
   return useQuery<Post>({
@@ -23,7 +24,10 @@ export const useCreatePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { title: string; content: string }) => {
+    mutationFn: async (data: {
+      title: string;
+      content: string | EditorJSData;
+    }) => {
       const res = await api.post("/posts/create", data);
       return res.data;
     },
@@ -47,7 +51,7 @@ export const useUpdatePost = () => {
       data,
     }: {
       id: string;
-      data: { title: string; content: string };
+      data: { title: string; content: string | EditorJSData };
     }) => {
       const res = await api.put(`/posts/${id}`, data);
       return res.data;
@@ -57,10 +61,11 @@ export const useUpdatePost = () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Post updated successfully!");
     },
-    onError: (err: unknown) =>
-      toast.error(
-        (err as ApiError)?.response?.data?.message || "Failed to update post"
-      ),
+    onError: (err: unknown) => {
+      const error = err as ApiError;
+      console.error("Update post error:", error.response?.data);
+      toast.error(error?.response?.data?.message || "Failed to update post");
+    },
   });
 };
 
@@ -106,8 +111,9 @@ export const usePosts = (searchQuery: string = "") => {
   return useInfiniteQuery<PostsResponse>({
     queryKey: ["posts", searchQuery],
     queryFn: async ({ pageParam = 1 }) => {
+      const page = typeof pageParam === "number" ? pageParam : 1;
       const params = new URLSearchParams({
-        page: pageParam.toString(),
+        page: page.toString(),
         limit: "10",
       });
 
@@ -118,6 +124,7 @@ export const usePosts = (searchQuery: string = "") => {
       const res = await api.get(`/posts?${params.toString()}`);
       return res.data;
     },
+    initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       return lastPage.hasNextPage ? lastPage.page + 1 : undefined;
     },

@@ -11,7 +11,11 @@ import type {
 
 export const useRegister = () => {
   return useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
+    mutationFn: async (data: {
+      email: string;
+      password: string;
+      name?: string;
+    }) => {
       const res = await api.post("/register", data);
       return res.data;
     },

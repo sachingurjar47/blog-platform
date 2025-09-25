@@ -1,29 +1,28 @@
 import { useRouter } from "next/router";
-import { toast } from "react-hot-toast";
-import { useLikePost, usePost, useDeletePost } from "@/hooks/usePosts";
+import { usePost, useDeletePost } from "@/hooks/usePosts";
 import {
   Box,
   Container,
   Typography,
-  Button,
   CircularProgress,
   Alert,
   Chip,
   IconButton,
   Divider,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import UpdateIcon from "@mui/icons-material/Update";
+import EditorJSRenderer from "../../components/EditorJSRenderer";
+import LikeButton from "../../components/LikeButton";
+import { EditorJSData } from "../../types/editorjs";
 
 const PostDetailPage = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
   const { data: post, isLoading } = usePost(id);
-  const likeMutation = useLikePost();
   const deletePostMutation = useDeletePost();
 
   if (isLoading) {
@@ -44,13 +43,6 @@ const PostDetailPage = () => {
       </Container>
     );
   }
-
-  const handleLike = () => {
-    likeMutation.mutate(id, {
-      onSuccess: () =>
-        toast.success(post?.isLiked ? "Post unliked!" : "Post liked!"),
-    });
-  };
 
   const handleDeletePost = async () => {
     if (window.confirm("Are you sure you want to delete this post?")) {
@@ -130,23 +122,24 @@ const PostDetailPage = () => {
 
       <Divider sx={{ mb: 3 }} />
 
-      <Typography variant="body1" paragraph sx={{ mb: 4, lineHeight: 1.8 }}>
-        {post.content}
-      </Typography>
+      <Box sx={{ mb: 4 }}>
+        {typeof post.content === "string" ? (
+          <Typography variant="body1" paragraph sx={{ lineHeight: 1.8 }}>
+            {post.content}
+          </Typography>
+        ) : (
+          <EditorJSRenderer data={post.content as EditorJSData} />
+        )}
+      </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <Button
-          variant={post.isLiked ? "contained" : "outlined"}
-          color="error"
-          startIcon={<FavoriteIcon />}
-          onClick={handleLike}
-          disabled={likeMutation.isPending}
-          sx={{ borderRadius: 2 }}
-        >
-          {likeMutation.isPending
-            ? "Processing..."
-            : `${post.isLiked ? "Liked" : "Like"} (${post.likes})`}
-        </Button>
+        <LikeButton
+          postId={post.id}
+          isLiked={post.isLiked || false}
+          likesCount={post.likes}
+          size="medium"
+          variant="button"
+        />
       </Box>
     </Container>
   );

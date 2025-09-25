@@ -54,6 +54,32 @@ function writeDB(db: DB) {
 
 export function getDB(): DB {
   const db = readDB();
+
+  // Migration: Add missing fields to existing posts
+  const migratedPosts = db.posts.map((post) => {
+    if (
+      !post.createdBy ||
+      !post.createdAt ||
+      !post.updatedAt ||
+      !post.likedBy
+    ) {
+      return {
+        ...post,
+        createdBy: post.createdBy || "046b94b7-e5fa-4394-8697-db6c63de5677", // Default to first user
+        createdAt: post.createdAt || new Date().toISOString(),
+        updatedAt: post.updatedAt || new Date().toISOString(),
+        likedBy: post.likedBy || [],
+      };
+    }
+    return post;
+  });
+
+  // Only save if migration was needed
+  if (migratedPosts.some((post, index) => post !== db.posts[index])) {
+    db.posts = migratedPosts;
+    saveDB(db);
+  }
+
   return db;
 }
 

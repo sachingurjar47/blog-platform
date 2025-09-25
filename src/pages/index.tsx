@@ -2,6 +2,7 @@ import { usePosts, useDeletePost } from "../hooks/usePosts";
 import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { truncateContent } from "../utils/contentUtils";
 import {
   Box,
   Container,
@@ -20,6 +21,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import LikeButton from "../components/LikeButton";
 
 const BlogListPage = () => {
   const router = useRouter();
@@ -40,10 +42,10 @@ const BlogListPage = () => {
     usePosts(debouncedSearch);
 
   const allPosts = useMemo(() => {
-    return data?.pages.flatMap((page) => page.posts) || [];
+    return data?.pages.flatMap((page: any) => page.posts) || [];
   }, [data]);
 
-  const totalPosts = data?.pages[0]?.total || 0;
+  const totalPosts = (data?.pages[0] as any)?.total || 0;
 
   useEffect(() => {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -85,7 +87,7 @@ const BlogListPage = () => {
         }}
       >
         <Typography variant="h3" component="h1">
-          Blog Posts
+          Blog
         </Typography>
         <Button
           variant="contained"
@@ -188,7 +190,7 @@ const BlogListPage = () => {
                       color="text.secondary"
                       sx={{ mb: 2 }}
                     >
-                      {post.content.slice(0, 150)}...
+                      {truncateContent(post.content, 150)}
                     </Typography>
 
                     <Box
@@ -197,24 +199,36 @@ const BlogListPage = () => {
                         gap: 2,
                         alignItems: "center",
                         flexWrap: "wrap",
+                        justifyContent: "space-between",
                       }}
                     >
-                      <Chip
-                        icon={<PersonIcon />}
-                        label={post.creator?.name || "Unknown Author"}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 2,
+                          alignItems: "center",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <Chip
+                          icon={<PersonIcon />}
+                          label={post.creator?.name || "Unknown Author"}
+                          size="small"
+                          variant="outlined"
+                        />
+                        <Chip
+                          icon={<AccessTimeIcon />}
+                          label={formatDate(post.createdAt)}
+                          size="small"
+                          variant="outlined"
+                        />
+                      </Box>
+                      <LikeButton
+                        postId={post.id}
+                        isLiked={post.isLiked || false}
+                        likesCount={post.likes}
                         size="small"
-                        variant="outlined"
-                      />
-                      <Chip
-                        icon={<AccessTimeIcon />}
-                        label={formatDate(post.createdAt)}
-                        size="small"
-                        variant="outlined"
-                      />
-                      <Chip
-                        label={`${post.likes} likes`}
-                        size="small"
-                        color="primary"
+                        variant="chip"
                       />
                     </Box>
                   </CardContent>

@@ -1,6 +1,48 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getDB } from "@/lib/db";
 import { verifyToken } from "@/lib/jwt";
+import { EditorJSData } from "@/types/editorjs";
+
+// Utility function to extract text content from EditorJSData or string
+function extractTextContent(content: string | EditorJSData): string {
+  if (typeof content === 'string') {
+    return content;
+  }
+
+  if (!content || !content.blocks) {
+    return '';
+  }
+
+  return content.blocks
+    .map((block) => {
+      switch (block.type) {
+        case 'header':
+          return block.data.text || '';
+        case 'paragraph':
+          return block.data.text || '';
+        case 'list':
+          return block.data.items?.join(' ') || '';
+        case 'quote':
+          return block.data.text || '';
+        case 'code':
+          return block.data.code || '';
+        case 'warning':
+          return `${block.data.title || ''} ${block.data.message || ''}`;
+        case 'image':
+          return block.data.caption || '';
+        case 'embed':
+          return block.data.caption || '';
+        case 'delimiter':
+          return '---';
+        default:
+          return '';
+      }
+    })
+    .join(' ')
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+    .trim();
+}
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const auth = req.headers.authorization;
@@ -24,9 +66,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         const creatorName = creator?.name?.toLowerCase() || "";
         const creatorEmail = creator?.email?.toLowerCase() || "";
 
+        const contentText = extractTextContent(post.content).toLowerCase();
         return (
           post.title.toLowerCase().includes(searchLower) ||
-          post.content.toLowerCase().includes(searchLower) ||
+          contentText.includes(searchLower) ||
           creatorName.includes(searchLower) ||
           creatorEmail.includes(searchLower)
         );

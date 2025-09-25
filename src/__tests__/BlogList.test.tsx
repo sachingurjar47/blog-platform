@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import Home from "@/pages/index";
 import * as usePostsHook from "@/hooks/usePosts";
 import * as useAuthHook from "@/hooks/useAuth";
@@ -32,8 +33,7 @@ describe("Blog list page", () => {
     } as any);
 
     render(<Home />);
-    expect(screen.getByText(/Blog Posts/)).toBeInTheDocument();
+    expect(screen.getByText(/Blog/)).toBeInTheDocument();
     expect(screen.getByText(/Hello World/)).toBeInTheDocument();
   });
 });
-

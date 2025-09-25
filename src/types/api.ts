@@ -1,7 +1,10 @@
+import { EditorJSData } from "./editorjs";
+
 export interface ApiError {
   response?: {
     data?: {
       message?: string;
+      errors?: { [key: string]: string };
     };
   };
 }
@@ -17,7 +20,7 @@ export interface User {
 export interface Post {
   id: string;
   title: string;
-  content: string;
+  content: string | EditorJSData; // Support both string and Editor.js data
   likes: number;
   likedBy: string[];
   createdBy: string;

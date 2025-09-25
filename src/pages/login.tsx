@@ -11,17 +11,82 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
+import { loginSchema } from "../schemas/validation";
+import { ApiError } from "../types/api";
 
 const LoginPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const loginMutation = useLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await loginMutation.mutateAsync({ email, password });
-    router.push("/");
+
+    // Clear previous errors
+    setErrors({});
+
+    try {
+      // Validate form
+      await loginSchema.validate({ email, password }, { abortEarly: false });
+
+      await loginMutation.mutateAsync({ email, password });
+      router.push("/");
+    } catch (error: unknown) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "name" in error &&
+        error.name === "ValidationError"
+      ) {
+        // Mark all fields as touched to show errors
+        setTouched({ email: true, password: true });
+
+        // Handle Yup validation errors
+        const validationErrors: { [key: string]: string } = {};
+        if ("inner" in error && Array.isArray(error.inner)) {
+          error.inner.forEach((err: { path?: string; message?: string }) => {
+            if (err.path && err.message) {
+              validationErrors[err.path] = err.message;
+            }
+          });
+        }
+        setErrors(validationErrors);
+      } else {
+        // Handle API validation errors
+        const apiError = error as ApiError;
+        if (apiError.response?.data?.errors) {
+          setTouched({ email: true, password: true });
+          setErrors(apiError.response.data.errors);
+        }
+      }
+    }
+  };
+
+  const handleFieldChange = (field: string, value: string) => {
+    // Mark field as touched
+    setTouched({ ...touched, [field]: true });
+
+    // Clear field error when user starts typing
+    if (errors[field]) {
+      setErrors({ ...errors, [field]: "" });
+    }
+
+    // Update field value
+    switch (field) {
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+    }
+  };
+
+  const shouldShowError = (field: string) => {
+    return !!errors[field];
   };
 
   return (
@@ -43,6 +108,7 @@ const LoginPage = () => {
           <Box
             component="form"
             onSubmit={handleSubmit}
+            noValidate
             width="100%"
             display="flex"
             flexDirection="column"
@@ -53,20 +119,22 @@ const LoginPage = () => {
               placeholder="Enter email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => handleFieldChange("email", e.target.value)}
               fullWidth
-              required
               size="small"
+              error={shouldShowError("email")}
+              helperText={shouldShowError("email") ? errors.email : ""}
             />
             <TextField
               label="Password"
               placeholder="Enter password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => handleFieldChange("password", e.target.value)}
               fullWidth
-              required
               size="small"
+              error={shouldShowError("password")}
+              helperText={shouldShowError("password") ? errors.password : ""}
             />
             <Button
               type="submit"

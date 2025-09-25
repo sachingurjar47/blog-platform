@@ -12,6 +12,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const auth = req.headers.authorization;
   const token = auth?.split(" ")[1] || req.cookies?.token;
   const user = getUserFromToken(token);
+
   if (!user) return res.status(401).json({ message: "Unauthorized" });
 
   const { id } = req.query;
@@ -28,10 +29,17 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         : null,
     });
   } else if (req.method === "PUT") {
-    if (post.createdBy !== (user as { id: string }).id) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized to edit this post" });
+    const userId = (user as { id: string }).id;
+
+    if (post.createdBy !== userId) {
+      return res.status(403).json({
+        message: "Not authorized to edit this post",
+        details: {
+          userId,
+          postCreatorId: post.createdBy,
+          postId: post.id,
+        },
+      });
     }
 
     const { title, content } = req.body || {};
