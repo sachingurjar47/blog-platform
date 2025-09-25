@@ -365,19 +365,11 @@ npm run build
 npm start
 ```
 
-### Deployment Options
-
-- **Vercel**: Recommended for Next.js applications
-- **Netlify**: Alternative deployment platform
-- **Docker**: Containerized deployment
-- **Traditional Hosting**: Any Node.js hosting service
-
 ### Environment Setup
 
-1. Set production environment variables
-2. Configure database (if not using JSON)
-3. Set up image storage (AWS S3, Cloudinary, etc.)
-4. Configure domain and SSL certificates
+1. **Required**: Set `JWT_SECRET` environment variable
+2. **Database**: Uses in-memory storage (no additional setup needed)
+3. **Optional**: Configure custom domain and SSL certificates
 
 ## 🤝 Contributing
 
