@@ -1,4 +1,5 @@
 import { ReactNode, memo } from "react";
+import { useRouter } from "next/router";
 import ProtectedRoute from "./ProtectedRoute";
 import AppBar from "./AppBar";
 import { Box } from "@mui/material";
@@ -15,11 +16,33 @@ interface LayoutProps {
  * Provides consistent layout structure with authentication protection
  *
  * Features:
- * - Protected route wrapper for authenticated users
+ * - Protected route wrapper for authenticated users (except login/register)
  * - Responsive app bar and content area
  * - Optimized with React.memo for performance
  */
 const Layout = memo(({ children }: LayoutProps) => {
+  const router = useRouter();
+
+  // Pages that don't require authentication
+  const publicPages = ["/login", "/register"];
+  const isPublicPage = publicPages.includes(router.pathname);
+
+  // For public pages, render without protection but still with layout
+  if (isPublicPage) {
+    return (
+      <Box
+        component="main"
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "background.default",
+        }}
+      >
+        {children}
+      </Box>
+    );
+  }
+
+  // For protected pages, wrap with ProtectedRoute and AppBar
   return (
     <ProtectedRoute>
       <AppBar />
