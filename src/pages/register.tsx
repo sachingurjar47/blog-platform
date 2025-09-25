@@ -97,13 +97,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      minHeight="100vh"
-      p={2}
-    >
+    <Box display="flex" alignItems="center" justifyContent="center" p={2}>
       <Paper elevation={3} sx={{ p: 4, width: "100%", maxWidth: 420 }}>
         <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
           <Avatar sx={{ bgcolor: "primary.main" }}>
