@@ -15,15 +15,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import UpdateIcon from "@mui/icons-material/Update";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditorJSRenderer from "../../components/EditorJSRenderer";
 import LikeButton from "../../components/LikeButton";
 import { EditorJSData } from "../../types/editorjs";
+import { useAuthCheck } from "@/hooks/useAuth";
 
 const PostDetailPage = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
   const { data: post, isLoading } = usePost(id);
   const deletePostMutation = useDeletePost();
+  const { data: authData } = useAuthCheck();
 
   if (isLoading) {
     return (
@@ -71,9 +74,18 @@ const PostDetailPage = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h3" component="h1" sx={{ flex: 1 }}>
-          {post.title}
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
+          <IconButton
+            onClick={() => router.back()}
+            title="Go back"
+            color="primary"
+          >
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography variant="h3" component="h1">
+            {post.title}
+          </Typography>
+        </Box>
         <Box sx={{ display: "flex", gap: 1, ml: 2 }}>
           <IconButton
             onClick={() => router.push(`/edit-post/${id}`)}
@@ -135,10 +147,11 @@ const PostDetailPage = () => {
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <LikeButton
           postId={post.id}
-          isLiked={post.isLiked || false}
+          isLiked={
+            post.likedBy?.some((item) => item === authData?.user?.id) || false
+          }
           likesCount={post.likes}
           size="medium"
-          variant="button"
         />
       </Box>
     </Container>

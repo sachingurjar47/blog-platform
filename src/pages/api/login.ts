@@ -35,6 +35,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   );
   if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
-  const token = signToken({ id: user.id, email: user.email });
+  const token = signToken({
+    id: user.id,
+    email: user.email,
+    name: user.name,
+  });
   res.status(200).json({ token });
 }

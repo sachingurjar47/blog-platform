@@ -1,55 +1,170 @@
-import { EditorJSData } from '../types/editorjs';
+import { EditorJSData } from "../types/editorjs";
+import { sanitizeString, truncateString } from "./index";
+
+/**
+ * Content utility functions for handling EditorJS data and text processing
+ * Features:
+ * - Text extraction from EditorJS blocks
+ * - Content sanitization
+ * - Text truncation
+ * - HTML tag removal
+ */
 
 /**
  * Extracts plain text content from EditorJSData or returns the string as-is
+ * @param content - String or EditorJSData to extract text from
+ * @returns Extracted plain text content
+ *
+ * @example
+ * extractTextContent("Hello World") // "Hello World"
+ * extractTextContent({ blocks: [{ type: 'paragraph', data: { text: 'Hello' } }] }) // "Hello"
  */
 export function extractTextContent(content: string | EditorJSData): string {
-  if (typeof content === 'string') {
+  if (typeof content === "string") {
     return content;
   }
 
-  if (!content || !content.blocks) {
-    return '';
+  if (!content || !content.blocks || !Array.isArray(content.blocks)) {
+    return "";
   }
 
-  return content.blocks
+  const extractedText = content.blocks
     .map((block) => {
+      if (!block || !block.type || !block.data) {
+        return "";
+      }
+
       switch (block.type) {
-        case 'header':
-          return block.data.text || '';
-        case 'paragraph':
-          return block.data.text || '';
-        case 'list':
-          return block.data.items?.join(' ') || '';
-        case 'quote':
-          return block.data.text || '';
-        case 'code':
-          return block.data.code || '';
-        case 'warning':
-          return `${block.data.title || ''} ${block.data.message || ''}`;
-        case 'image':
-          return block.data.caption || '';
-        case 'embed':
-          return block.data.caption || '';
-        case 'delimiter':
-          return '---';
+        case "header":
+          return block.data.text || "";
+        case "paragraph":
+          return block.data.text || "";
+        case "list":
+          return Array.isArray(block.data.items)
+            ? block.data.items.join(" ")
+            : "";
+        case "quote":
+          return block.data.text || "";
+        case "code":
+          return block.data.code || "";
+        case "warning":
+          const title = block.data.title || "";
+          const message = block.data.message || "";
+          return title && message ? `${title} ${message}` : title || message;
+        case "image":
+          return block.data.caption || "";
+        case "embed":
+          return block.data.caption || "";
+        case "delimiter":
+          return "---";
+        case "table":
+          // Extract text from table cells
+          if (block.data.content && Array.isArray(block.data.content)) {
+            return block.data.content
+              .flat()
+              .map((cell: unknown) => String(cell || ""))
+              .join(" ");
+          }
+          return "";
         default:
-          return '';
+          // Try to extract any text content from unknown block types
+          if (block.data && typeof block.data === "object") {
+            const textFields = Object.values(block.data)
+              .filter((value) => typeof value === "string")
+              .join(" ");
+            return textFields;
+          }
+          return "";
       }
     })
-    .join(' ')
-    .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-    .trim();
+    .join(" ");
+
+  // Sanitize the extracted text
+  return sanitizeString(extractedText);
 }
 
 /**
  * Truncates text content to specified length
+ * @param content - String or EditorJSData to truncate
+ * @param maxLength - Maximum length of the truncated text (default: 150)
+ * @param suffix - Suffix to add when truncated (default: "...")
+ * @returns Truncated text content
+ *
+ * @example
+ * truncateContent("Hello World", 5) // "Hello..."
+ * truncateContent({ blocks: [...] }, 100) // "Extracted text..."
  */
-export function truncateContent(content: string | EditorJSData, maxLength: number = 150): string {
+export function truncateContent(
+  content: string | EditorJSData,
+  maxLength: number = 150,
+  suffix: string = "..."
+): string {
   const text = extractTextContent(content);
-  if (text.length <= maxLength) {
-    return text;
+  return truncateString(text, maxLength, suffix);
+}
+
+/**
+ * Gets the word count of content
+ * @param content - String or EditorJSData to count words in
+ * @returns Number of words
+ *
+ * @example
+ * getWordCount("Hello World") // 2
+ * getWordCount({ blocks: [...] }) // 150
+ */
+export function getWordCount(content: string | EditorJSData): number {
+  const text = extractTextContent(content);
+  if (!text.trim()) return 0;
+
+  return text.trim().split(/\s+/).length;
+}
+
+/**
+ * Gets the reading time estimate for content
+ * @param content - String or EditorJSData to estimate reading time for
+ * @param wordsPerMinute - Average reading speed (default: 200)
+ * @returns Reading time in minutes
+ *
+ * @example
+ * getReadingTime("Hello World") // 1
+ * getReadingTime({ blocks: [...] }, 250) // 2
+ */
+export function getReadingTime(
+  content: string | EditorJSData,
+  wordsPerMinute: number = 200
+): number {
+  const wordCount = getWordCount(content);
+  return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+}
+
+/**
+ * Checks if content is empty
+ * @param content - String or EditorJSData to check
+ * @returns Boolean indicating if content is empty
+ *
+ * @example
+ * isEmptyContent("") // true
+ * isEmptyContent("Hello") // false
+ * isEmptyContent({ blocks: [] }) // true
+ */
+export function isEmptyContent(content: string | EditorJSData): boolean {
+  if (typeof content === "string") {
+    return !content.trim();
   }
-  return text.slice(0, maxLength) + '...';
+
+  if (!content || !content.blocks || !Array.isArray(content.blocks)) {
+    return true;
+  }
+
+  return (
+    content.blocks.length === 0 ||
+    content.blocks.every(
+      (block) =>
+        !block ||
+        !block.data ||
+        Object.values(block.data).every(
+          (value) => !value || (typeof value === "string" && !value.trim())
+        )
+    )
+  );
 }

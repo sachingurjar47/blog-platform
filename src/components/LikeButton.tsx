@@ -1,38 +1,44 @@
-import React from "react";
-import {
-  IconButton,
-  Tooltip,
-  Box,
-  Typography,
-  Button,
-  Chip,
-} from "@mui/material";
+import React, { memo, useCallback } from "react";
+import { Box, IconButton, Typography, Tooltip } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useLikePost } from "../hooks/usePosts";
 
+/**
+ * Props interface for the LikeButton component
+ */
 interface LikeButtonProps {
   postId: string;
   isLiked: boolean;
   likesCount: number;
   size?: "small" | "medium";
-  showCount?: boolean;
   disabled?: boolean;
-  variant?: "icon" | "button" | "chip";
+  showCount?: boolean;
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({
+/**
+ * Like button component for posts
+ * Features:
+ * - Optimistic UI updates
+ * - Loading states
+ * - Accessibility support
+ * - Responsive design
+ * - Memoized for performance
+ */
+const LikeButton: React.FC<LikeButtonProps> = memo(({
   postId,
   isLiked,
   likesCount,
   size = "medium",
-  showCount = true,
   disabled = false,
-  variant = "icon",
+  showCount = true,
 }) => {
   const likePostMutation = useLikePost();
 
-  const handleLike = async (e: React.MouseEvent) => {
+  /**
+   * Handles like/unlike action
+   */
+  const handleLike = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -43,96 +49,84 @@ const LikeButton: React.FC<LikeButtonProps> = ({
     } catch (error) {
       console.error("Error liking post:", error);
     }
-  };
+  }, [postId, disabled, likePostMutation]);
 
-  const iconSize = size === "small" ? "small" : "medium";
-  const iconColor = isLiked ? "error" : "action";
+  const isPending = likePostMutation.isPending;
+  const isDisabled = disabled || isPending;
 
-  if (variant === "chip") {
-    return (
-      <Chip
-        icon={isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-        label={likesCount}
-        onClick={handleLike}
-        disabled={disabled || likePostMutation.isPending}
-        color={isLiked ? "error" : "default"}
-        variant={isLiked ? "filled" : "outlined"}
-        size={size}
-        sx={{
-          cursor:
-            disabled || likePostMutation.isPending ? "default" : "pointer",
-          "&:hover": {
-            backgroundColor: isLiked ? "error.dark" : "action.hover",
-          },
-          transition: "all 0.2s ease-in-out",
-        }}
-      />
-    );
-  }
-
-  if (variant === "button") {
-    return (
-      <Button
-        startIcon={isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-        onClick={handleLike}
-        disabled={disabled || likePostMutation.isPending}
-        color={isLiked ? "error" : "inherit"}
-        variant={isLiked ? "contained" : "outlined"}
-        size={size}
-        sx={{
-          borderRadius: 2,
-          transition: "all 0.2s ease-in-out",
-        }}
-      >
-        {showCount
-          ? `${isLiked ? "Liked" : "Like"} (${likesCount})`
-          : isLiked
-          ? "Liked"
-          : "Like"}
-      </Button>
-    );
-  }
-
-  // Default icon variant
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-      <Tooltip title={isLiked ? "Unlike" : "Like"} arrow>
-        <IconButton
-          onClick={handleLike}
-          disabled={disabled || likePostMutation.isPending}
-          size={size}
-          sx={{
-            color: isLiked ? "error.main" : "text.secondary",
-            "&:hover": {
-              color: isLiked ? "error.dark" : "error.main",
-              backgroundColor: isLiked ? "error.light" : "action.hover",
-            },
-            transition: "all 0.2s ease-in-out",
-          }}
-        >
-          {isLiked ? (
-            <FavoriteIcon fontSize={iconSize} />
-          ) : (
-            <FavoriteBorderIcon fontSize={iconSize} />
-          )}
-        </IconButton>
-      </Tooltip>
       {showCount && (
         <Typography
           variant="body2"
           color="text.secondary"
           sx={{
-            minWidth: "20px",
+            minWidth: 20,
             textAlign: "center",
-            fontWeight: isLiked ? 600 : 400,
-            color: isLiked ? "error.main" : "text.secondary",
+            fontSize: size === "small" ? "0.75rem" : "0.875rem",
+            fontWeight: 500,
           }}
         >
           {likesCount}
         </Typography>
       )}
+      
+      <Tooltip 
+        title={isLiked ? "Unlike this post" : "Like this post"}
+        placement="top"
+      >
+        <IconButton
+          size={size}
+          onClick={handleLike}
+          disabled={isDisabled}
+          sx={{
+            cursor: isDisabled ? "default" : "pointer",
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              transform: isDisabled ? "none" : "scale(1.1)",
+              backgroundColor: isLiked ? "error.light" : "primary.light",
+              color: "white",
+            },
+            "&:active": {
+              transform: isDisabled ? "none" : "scale(0.95)",
+            },
+            color: isLiked ? "error.main" : "text.secondary",
+          }}
+          aria-label={isLiked ? "Unlike post" : "Like post"}
+          aria-pressed={isLiked}
+        >
+          {isLiked ? (
+            <FavoriteIcon 
+              fontSize={size}
+              sx={{
+                animation: isPending ? "pulse 1.5s ease-in-out infinite" : "none",
+                "@keyframes pulse": {
+                  "0%": { transform: "scale(1)" },
+                  "50%": { transform: "scale(1.2)" },
+                  "100%": { transform: "scale(1)" },
+                },
+              }}
+            />
+          ) : (
+            <FavoriteBorderIcon 
+              fontSize={size}
+              sx={{
+                animation: isPending ? "pulse 1.5s ease-in-out infinite" : "none",
+                "@keyframes pulse": {
+                  "0%": { transform: "scale(1)" },
+                  "50%": { transform: "scale(1.2)" },
+                  "100%": { transform: "scale(1)" },
+                },
+              }}
+            />
+          )}
+        </IconButton>
+      </Tooltip>
     </Box>
   );
-};
+});
+
+// Set display name for better debugging
+LikeButton.displayName = "LikeButton";
 
 export default LikeButton;

@@ -6,6 +6,7 @@ export interface ApiError {
       message?: string;
       errors?: { [key: string]: string };
     };
+    status?: number;
   };
 }
 

@@ -9,7 +9,6 @@ import {
   Button,
   Paper,
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RichTextEditor from "../components/RichTextEditor";
 import { EditorJSData } from "../types/editorjs";
 import {
@@ -116,19 +115,12 @@ const CreatePostPage = () => {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Box sx={{ mb: 3, display: "flex", alignItems: "center", gap: 2 }}>
-        <Button
-          startIcon={<ArrowBackIcon />}
-          onClick={handleCancel}
-          variant="outlined"
-        >
-          Back
-        </Button>
-        <Typography variant="h4" component="h1">
+        <Typography variant="h5" component="h1">
           Create New Post
         </Typography>
       </Box>
 
-      <Paper sx={{ p: 4 }}>
+      <Paper sx={{ p: 2 }}>
         <Box
           component="form"
           onSubmit={handleSubmit}
@@ -143,6 +135,7 @@ const CreatePostPage = () => {
             placeholder="Enter a compelling title..."
             error={shouldShowError("title")}
             helperText={shouldShowError("title") ? errors.title : ""}
+            size="small"
           />
           <Box>
             <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 500 }}>

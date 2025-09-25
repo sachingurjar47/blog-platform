@@ -56,6 +56,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   db.users.push(newUser);
   saveDB(db);
 
-  const token = signToken({ id: newUser.id, email: newUser.email });
+  const token = signToken({
+    id: newUser.id,
+    email: newUser.email,
+    name: newUser.name,
+  });
   res.status(201).json({ token });
 }
