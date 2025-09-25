@@ -6,6 +6,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).end();
 
   const { email, password } = req.body || {};
+  console.log("Login API received:", { email, password, body: req.body });
 
   // Validation errors object
   const errors: { [key: string]: string } = {};
@@ -30,9 +31,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const db = getDB();
+  console.log("Database users:", db.users);
+  console.log("Looking for user with email:", email, "and password:", password);
   const user = db.users.find(
     (u) => u.email === email && u.password === password
   );
+  console.log("Found user:", user);
   if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
   const token = signToken({

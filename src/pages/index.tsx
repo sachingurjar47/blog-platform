@@ -99,7 +99,7 @@ const BlogListPage = () => {
    */
   const handleCreatePost = useCallback(() => {
     router.push("/create-post");
-  }, [router]);
+  }, [router.push]);
 
   /**
    * Handles navigation to edit post page
@@ -108,7 +108,7 @@ const BlogListPage = () => {
     (postId: string) => {
       router.push(`/edit-post/${postId}`);
     },
-    [router]
+    [router.push]
   );
 
   // Show error state if there's an error

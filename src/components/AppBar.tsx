@@ -21,7 +21,7 @@ import { useRouter } from "next/router";
 import { useAuthCheck } from "../hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
 import { getInitials } from "@/utils";
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, useMemo } from "react";
 import type { AuthResponse } from "../types/api";
 
 /**
@@ -41,9 +41,14 @@ const AppBar = memo(() => {
   const { data: authData, isLoading } = useAuthCheck();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const isAuthenticated = (authData as AuthResponse)?.authenticated;
-  const userName = (authData as AuthResponse)?.user?.name || "User";
-  const userInitials = getInitials(userName);
+  const { isAuthenticated, userName, userInitials } = useMemo(() => {
+    const auth = authData as AuthResponse;
+    return {
+      isAuthenticated: auth?.authenticated,
+      userName: auth?.user?.name || "User",
+      userInitials: getInitials(auth?.user?.name || "User"),
+    };
+  }, [authData]);
 
   /**
    * Handles user logout and redirects to login page

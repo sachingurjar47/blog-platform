@@ -85,12 +85,8 @@ export const useLogin = () => {
         sameSite: "strict",
       });
 
-      console.log("Token set in cookies:", data.token);
-
       // Invalidate and refetch auth data
       queryClient.invalidateQueries({ queryKey: ["auth"] });
-      // Force refetch the auth data to get updated user info
-      queryClient.refetchQueries({ queryKey: ["auth"] });
       toast.success("Login successful! Welcome back!");
     },
     onError: (error: ApiError) => {
@@ -116,10 +112,17 @@ export const useAuthCheck = () => {
       try {
         const res = await api.get("/auth-check");
         return res.data;
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Handle 401 responses as valid data (user not authenticated)
-        if (error?.response?.status === 401) {
-          return error.response.data as AuthResponse;
+        if (
+          error &&
+          typeof error === "object" &&
+          "response" in error &&
+          (error as { response: { status: number; data: AuthResponse } })
+            .response.status === 401
+        ) {
+          return (error as { response: { status: number; data: AuthResponse } })
+            .response.data;
         }
         // Re-throw other errors
         throw error;

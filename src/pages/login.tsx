@@ -33,8 +33,10 @@ const LoginPage = () => {
       await loginSchema.validate({ email, password }, { abortEarly: false });
 
       await loginMutation.mutateAsync({ email, password });
-      console.log("Login successful, redirecting to home page");
-      router.push("/");
+      // Small delay to ensure token is set and auth state is updated
+      setTimeout(() => {
+        router.push("/");
+      }, 100);
     } catch (error: unknown) {
       if (
         error &&
@@ -65,6 +67,10 @@ const LoginPage = () => {
           // Handle general API errors (like "Invalid credentials")
           setTouched({ email: true, password: true });
           setErrors({ general: apiError.response.data.message });
+        } else {
+          // Handle other errors
+          setTouched({ email: true, password: true });
+          setErrors({ general: "Login failed. Please try again." });
         }
       }
     }
