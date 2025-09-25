@@ -14,10 +14,6 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { usePost, useUpdatePost } from "@/hooks/usePosts";
 import RichTextEditor from "../../components/RichTextEditor";
 import { EditorJSData } from "../../types/editorjs";
-import {
-  cleanupUploadedImages,
-  clearUploadedImages,
-} from "../../utils/imageCleanup";
 import { postSchema } from "../../schemas/validation";
 
 const EditPostPage = () => {
@@ -74,8 +70,7 @@ const EditPostPage = () => {
         id: id as string,
         data: { title: title.trim(), content: content! },
       });
-      // Clear uploaded images tracking since post was successfully updated
-      clearUploadedImages();
+
       router.push(`/posts/${id}`);
     } catch (error: unknown) {
       if (
@@ -128,20 +123,8 @@ const EditPostPage = () => {
   };
 
   const handleCancel = useCallback(async () => {
-    // Clean up any uploaded images before navigating away
-    await cleanupUploadedImages();
     router.back();
   }, [router]);
-
-  // Clean up images when component unmounts (user navigates away)
-  useEffect(() => {
-    return () => {
-      // Only cleanup if the post wasn't successfully updated
-      if (!updatePostMutation.isSuccess) {
-        cleanupUploadedImages();
-      }
-    };
-  }, [updatePostMutation.isSuccess]);
 
   if (isLoading) {
     return (
