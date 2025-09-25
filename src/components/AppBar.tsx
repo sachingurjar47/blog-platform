@@ -86,6 +86,7 @@ const AppBar = memo(() => {
 
   return (
     <MuiAppBar
+      data-testid="app-bar"
       position="fixed"
       elevation={2}
       sx={{

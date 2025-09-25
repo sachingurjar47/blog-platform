@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getDB } from "@/lib/db";
 import { verifyToken } from "@/lib/jwt";
-import { EditorJSData } from "@/types/editorjs";
+// import { EditorJSData } from "@/types/editorjs";
 import { extractTextContent } from "@/utils/contentUtils";
 
 /**
@@ -58,7 +58,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         const creator = userMap.get(post.createdBy);
         const creatorName = creator?.name?.toLowerCase() || "";
         const creatorEmail = creator?.email?.toLowerCase() || "";
-        const contentText = extractTextContent(post.content).toLowerCase();
+        const contentText = extractTextContent(
+          post.content as string | { blocks: { type: string; data: unknown }[] }
+        ).toLowerCase();
 
         return (
           post.title.toLowerCase().includes(searchLower) ||

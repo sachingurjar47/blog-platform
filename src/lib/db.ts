@@ -13,7 +13,7 @@ export type User = {
 export type Post = {
   id: string;
   title: string;
-  content: string;
+  content: string | unknown;
   likes: number;
   likedBy: string[];
   createdBy: string;
@@ -40,7 +40,7 @@ function readDB(): DB {
   const raw = fs.readFileSync(DATA_FILE, "utf8");
   try {
     return JSON.parse(raw) as DB;
-  } catch (err) {
+  } catch {
     // If json parse fails, re-create file
     const fallback: DB = { users: [], posts: [] };
     fs.writeFileSync(DATA_FILE, JSON.stringify(fallback, null, 2), "utf8");

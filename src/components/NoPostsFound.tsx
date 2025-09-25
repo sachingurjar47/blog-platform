@@ -22,6 +22,7 @@ const NoPostsFound: React.FC<NoPostsFoundProps> = memo(
   ({ hasSearchQuery, onCreatePost }) => {
     return (
       <Paper
+        data-testid="no-posts-container"
         elevation={0}
         sx={{
           p: 6,
@@ -34,7 +35,7 @@ const NoPostsFound: React.FC<NoPostsFoundProps> = memo(
         <Typography variant="h5" color="text.secondary" gutterBottom>
           {hasSearchQuery
             ? "No posts found matching your search"
-            : "No posts yet"}
+            : "No posts found"}
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
           {hasSearchQuery
@@ -43,7 +44,7 @@ const NoPostsFound: React.FC<NoPostsFoundProps> = memo(
         </Typography>
         <Button
           variant="contained"
-          startIcon={<AddIcon />}
+          startIcon={<AddIcon data-testid="no-posts-icon" />}
           onClick={onCreatePost}
           size="large"
         >

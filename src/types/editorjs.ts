@@ -8,13 +8,13 @@ export interface EditorJSData {
 export interface EditorJSBlock {
   id?: string;
   type: string;
-  data: any;
+  data: unknown;
 }
 
 export interface EditorJSTool {
-  class: any;
+  class: unknown;
   inlineToolbar?: boolean;
-  config?: any;
+  config?: unknown;
 }
 
 export interface EditorJSConfig {
@@ -23,5 +23,5 @@ export interface EditorJSConfig {
   tools: Record<string, EditorJSTool>;
   data?: EditorJSData;
   readOnly?: boolean;
-  onChange?: (api: any, event: any) => void;
+  onChange?: (api: unknown, event: unknown) => void;
 }

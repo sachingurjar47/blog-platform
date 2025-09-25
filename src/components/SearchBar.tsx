@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from "react";
-import { TextField } from "@mui/material";
+import { TextField, Box } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 /**
@@ -38,24 +38,27 @@ const SearchBar: React.FC<SearchBarProps> = memo(
     );
 
     return (
-      <TextField
-        fullWidth
-        placeholder={placeholder}
-        value={value}
-        onChange={handleChange}
-        disabled={disabled}
-        size="small"
-        InputProps={{
-          startAdornment: (
-            <SearchIcon sx={{ mr: 1, color: "text.secondary" }} />
-          ),
-        }}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: 2,
-          },
-        }}
-      />
+      <Box data-testid="search-bar">
+        <TextField
+          fullWidth
+          placeholder={placeholder}
+          value={value}
+          onChange={handleChange}
+          disabled={disabled}
+          size="small"
+          inputProps={{ "data-testid": "search-input" }}
+          InputProps={{
+            startAdornment: (
+              <SearchIcon sx={{ mr: 1, color: "text.secondary" }} />
+            ),
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+            },
+          }}
+        />
+      </Box>
     );
   }
 );

@@ -35,7 +35,7 @@ export default async function handler(
       },
     });
 
-    const [fields, files] = await form.parse(req);
+    const [, files] = await form.parse(req);
     const file = Array.isArray(files.image) ? files.image[0] : files.image;
 
     if (!file) {

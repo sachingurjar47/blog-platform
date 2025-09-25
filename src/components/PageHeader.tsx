@@ -24,6 +24,7 @@ const PageHeader: React.FC<PageHeaderProps> = memo(
   ({ title, buttonText, onButtonClick, buttonIcon = <AddIcon /> }) => {
     return (
       <Box
+        data-testid="page-header"
         sx={{
           display: "flex",
           justifyContent: "space-between",

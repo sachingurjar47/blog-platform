@@ -47,15 +47,43 @@ const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <Box
+      data-testid="loading-skeleton"
+      sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+    >
       {[...Array(count)].map((_, index) => (
         <Card key={index} sx={{ p: 2 }}>
-          <Skeleton variant="text" width="60%" height={32} />
-          <Skeleton variant="text" width="100%" height={20} />
-          <Skeleton variant="text" width="80%" height={20} />
+          <Skeleton
+            variant="text"
+            width="60%"
+            height={32}
+            data-testid="skeleton-item"
+          />
+          <Skeleton
+            variant="text"
+            width="100%"
+            height={20}
+            data-testid="skeleton-item"
+          />
+          <Skeleton
+            variant="text"
+            width="80%"
+            height={20}
+            data-testid="skeleton-item"
+          />
           <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
-            <Skeleton variant="rectangular" width={80} height={24} />
-            <Skeleton variant="rectangular" width={100} height={24} />
+            <Skeleton
+              variant="rectangular"
+              width={80}
+              height={24}
+              data-testid="skeleton-item"
+            />
+            <Skeleton
+              variant="rectangular"
+              width={100}
+              height={24}
+              data-testid="skeleton-item"
+            />
           </Box>
         </Card>
       ))}

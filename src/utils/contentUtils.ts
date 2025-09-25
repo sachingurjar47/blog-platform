@@ -36,31 +36,32 @@ export function extractTextContent(content: string | EditorJSData): string {
 
       switch (block.type) {
         case "header":
-          return block.data.text || "";
+          return (block.data as { text?: string }).text || "";
         case "paragraph":
-          return block.data.text || "";
+          return (block.data as { text?: string }).text || "";
         case "list":
-          return Array.isArray(block.data.items)
-            ? block.data.items.join(" ")
+          return Array.isArray((block.data as { items?: unknown[] }).items)
+            ? (block.data as { items: string[] }).items.join(" ")
             : "";
         case "quote":
-          return block.data.text || "";
+          return (block.data as { text?: string }).text || "";
         case "code":
-          return block.data.code || "";
+          return (block.data as { code?: string }).code || "";
         case "warning":
-          const title = block.data.title || "";
-          const message = block.data.message || "";
+          const title = (block.data as { title?: string }).title || "";
+          const message = (block.data as { message?: string }).message || "";
           return title && message ? `${title} ${message}` : title || message;
         case "image":
-          return block.data.caption || "";
+          return (block.data as { caption?: string }).caption || "";
         case "embed":
-          return block.data.caption || "";
+          return (block.data as { caption?: string }).caption || "";
         case "delimiter":
           return "---";
         case "table":
           // Extract text from table cells
-          if (block.data.content && Array.isArray(block.data.content)) {
-            return block.data.content
+          const tableData = block.data as { content?: unknown[][] };
+          if (tableData.content && Array.isArray(tableData.content)) {
+            return tableData.content
               .flat()
               .map((cell: unknown) => String(cell || ""))
               .join(" ");

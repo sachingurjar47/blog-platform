@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Box, Typography } from "@mui/material";
 import { EditorJSData } from "../types/editorjs";
 import { trackUploadedImage } from "../utils/imageCleanup";
@@ -13,13 +7,13 @@ import { trackUploadedImage } from "../utils/imageCleanup";
 interface EditorJS {
   destroy(): void;
   isReady: Promise<void>;
-  save(): Promise<EditorJSData>;
+  save(): Promise<unknown>;
 }
 
 interface EditorJSToolClass {
-  new (): any;
-  toolbox?: any;
-  sanitize?: any;
+  new (): unknown;
+  toolbox?: unknown;
+  sanitize?: unknown;
 }
 
 interface RichTextEditorProps {
@@ -248,7 +242,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         editorRef.current.destroy();
       }
     };
-  }, [placeholder, readOnly, handleChange, isClient]);
+  }, [placeholder, readOnly, handleChange, isClient, data]);
 
   // Note: Editor.js will handle data changes internally
   // The editor is initialized with the data prop and will update accordingly

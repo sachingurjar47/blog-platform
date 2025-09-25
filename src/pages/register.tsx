@@ -114,6 +114,7 @@ const RegisterPage = () => {
           </Typography>
           <Box
             component="form"
+            data-testid="register-form"
             onSubmit={handleSubmit}
             noValidate
             width="100%"
@@ -131,6 +132,7 @@ const RegisterPage = () => {
               size="small"
               error={shouldShowError("name")}
               helperText={shouldShowError("name") ? errors.name : ""}
+              inputProps={{ "data-testid": "name-input" }}
             />
             <TextField
               label="Email"
@@ -142,6 +144,7 @@ const RegisterPage = () => {
               size="small"
               error={shouldShowError("email")}
               helperText={shouldShowError("email") ? errors.email : ""}
+              inputProps={{ "data-testid": "email-input" }}
             />
             <TextField
               label="Password"
@@ -153,12 +156,14 @@ const RegisterPage = () => {
               size="small"
               error={shouldShowError("password")}
               helperText={shouldShowError("password") ? errors.password : ""}
+              inputProps={{ "data-testid": "password-input" }}
             />
             <Button
               type="submit"
               color="primary"
               variant="contained"
               disabled={registerMutation.isPending}
+              data-testid="register-button"
             >
               {registerMutation.isPending ? "Creating..." : "Create account"}
             </Button>

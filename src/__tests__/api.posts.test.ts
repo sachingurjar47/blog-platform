@@ -9,11 +9,10 @@ function createMockRes() {
     res.statusCode = code;
     return res as NextApiResponse;
   };
-  // @ts-ignore
-  res.json = (data: any) => ({ statusCode: res.statusCode, data });
-  // @ts-ignore
+  res.json = (data: unknown) => ({ statusCode: res.statusCode, data });
+  // @ts-expect-error - Mock implementation for testing
   res.setHeader = () => {};
-  // @ts-ignore
+  // @ts-expect-error - Mock implementation for testing
   res.end = () => {};
   return res as NextApiResponse;
 }
@@ -24,7 +23,7 @@ describe("GET /api/posts", () => {
     const res = createMockRes();
     const result = postsHandler(req, res) as unknown as {
       statusCode: number;
-      data: any;
+      data: unknown;
     };
     expect(result.statusCode).toBe(401);
   });
@@ -39,7 +38,7 @@ describe("GET /api/posts", () => {
     const res = createMockRes();
     const result = postsHandler(req, res) as unknown as {
       statusCode: number;
-      data: any;
+      data: { posts: unknown[]; total: number };
     };
     expect(result.statusCode).toBe(200);
     expect(Array.isArray(result.data.posts)).toBe(true);
@@ -47,4 +46,3 @@ describe("GET /api/posts", () => {
     expect(typeof result.data.total).toBe("number");
   });
 });
-

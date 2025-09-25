@@ -87,6 +87,8 @@ export const useLogin = () => {
 
       // Invalidate and refetch auth data
       queryClient.invalidateQueries({ queryKey: ["auth"] });
+      // Force refetch the auth data to get updated user info
+      queryClient.refetchQueries({ queryKey: ["auth"] });
       toast.success("Login successful! Welcome back!");
     },
     onError: (error: ApiError) => {
@@ -139,11 +141,14 @@ export const logout = (queryClient: ReturnType<typeof useQueryClient>) => {
     // Remove token from cookies
     Cookies.remove("token");
 
-    // Clear auth data from cache
+    // Clear auth data from cache immediately to prevent API interceptor from firing
     queryClient.setQueryData<AuthResponse>(["auth"], {
       authenticated: false,
       user: undefined,
     });
+
+    // Cancel any pending requests to prevent 401 errors
+    queryClient.cancelQueries();
 
     // Invalidate all queries to refresh data
     queryClient.invalidateQueries();

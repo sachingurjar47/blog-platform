@@ -107,6 +107,7 @@ const LoginPage = () => {
           </Typography>
           <Box
             component="form"
+            data-testid="login-form"
             onSubmit={handleSubmit}
             noValidate
             width="100%"
@@ -124,6 +125,7 @@ const LoginPage = () => {
               size="small"
               error={shouldShowError("email")}
               helperText={shouldShowError("email") ? errors.email : ""}
+              inputProps={{ "data-testid": "email-input" }}
             />
             <TextField
               label="Password"
@@ -135,12 +137,14 @@ const LoginPage = () => {
               size="small"
               error={shouldShowError("password")}
               helperText={shouldShowError("password") ? errors.password : ""}
+              inputProps={{ "data-testid": "password-input" }}
             />
             <Button
               type="submit"
               color="primary"
               variant="contained"
               disabled={loginMutation.isPending}
+              data-testid="login-button"
             >
               {loginMutation.isPending ? "Signing in..." : "Sign in"}
             </Button>

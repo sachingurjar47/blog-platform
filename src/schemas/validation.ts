@@ -44,7 +44,7 @@ export const postSchema = object({
       }
       if (typeof value === "object" && value !== null) {
         // For EditorJSData, check if there are blocks with content
-        const editorData = value as any;
+        const editorData = value as { blocks?: unknown[] };
         return editorData.blocks && editorData.blocks.length > 0;
       }
       return false;
@@ -65,5 +65,5 @@ export type LoginFormData = {
 
 export type PostFormData = {
   title: string;
-  content: string | any; // EditorJSData or string
+  content: string | unknown; // EditorJSData or string
 };

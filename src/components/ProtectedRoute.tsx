@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }: Props) => {
 
   useEffect(() => {
     if (authenticated === false) router.push("/login");
-  }, [authenticated]);
+  }, [authenticated, router]);
 
   if (isLoading || authenticated === undefined) return <div>Loading...</div>;
 

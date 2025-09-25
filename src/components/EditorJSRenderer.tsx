@@ -8,15 +8,19 @@ interface EditorJSRendererProps {
 }
 
 const EditorJSRenderer: React.FC<EditorJSRendererProps> = ({ data }) => {
-  const renderBlock = (block: { type: string; data: any }, index: number) => {
+  const renderBlock = (
+    block: { type: string; data: unknown },
+    index: number
+  ) => {
     switch (block.type) {
       case "header":
-        const HeaderTag =
-          `h${block.data.level}` as keyof React.JSX.IntrinsicElements;
+        const HeaderTag = `h${
+          (block.data as { level: number }).level
+        }` as keyof React.JSX.IntrinsicElements;
         const headerText =
-          typeof block.data.text === "string"
-            ? block.data.text
-            : String(block.data.text || "");
+          typeof (block.data as { text: unknown }).text === "string"
+            ? (block.data as { text: string }).text
+            : String((block.data as { text: unknown }).text || "");
         return React.createElement(
           HeaderTag,
           {
@@ -31,9 +35,9 @@ const EditorJSRenderer: React.FC<EditorJSRendererProps> = ({ data }) => {
 
       case "paragraph":
         const paragraphText =
-          typeof block.data.text === "string"
-            ? block.data.text
-            : String(block.data.text || "");
+          typeof (block.data as { text: unknown }).text === "string"
+            ? (block.data as { text: string }).text
+            : String((block.data as { text: unknown }).text || "");
         return (
           <Typography
             key={index}
@@ -60,37 +64,40 @@ const EditorJSRenderer: React.FC<EditorJSRendererProps> = ({ data }) => {
         );
 
       case "list":
-        const ListTag = block.data.style === "ordered" ? "ol" : "ul";
+        const ListTag =
+          (block.data as { style: string }).style === "ordered" ? "ol" : "ul";
         return (
           <Box key={index} component={ListTag} sx={{ pl: 3, mb: 2 }}>
-            {block.data.items.map((item: any, itemIndex: number) => {
-              // Ensure item is a string
-              const itemText =
-                typeof item === "string" ? item : String(item || "");
-              return (
-                <Typography
-                  key={itemIndex}
-                  component="li"
-                  variant="body1"
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      itemText
-                        ?.replace(
-                          /<mark class="cdx-marker">(.*?)<\/mark>/g,
-                          '<mark style="background-color: #ffeb3b; padding: 2px 4px; border-radius: 3px;">$1</mark>'
-                        )
-                        ?.replace(
-                          /<code class="inline-code">(.*?)<\/code>/g,
-                          '<code style="background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: monospace; font-size: 0.9em;">$1</code>'
-                        )
-                        ?.replace(
-                          /<u>(.*?)<\/u>/g,
-                          '<u style="text-decoration: underline;">$1</u>'
-                        ) || itemText,
-                  }}
-                />
-              );
-            })}
+            {(block.data as { items: unknown[] }).items.map(
+              (item: unknown, itemIndex: number) => {
+                // Ensure item is a string
+                const itemText =
+                  typeof item === "string" ? item : String(item || "");
+                return (
+                  <Typography
+                    key={itemIndex}
+                    component="li"
+                    variant="body1"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        itemText
+                          ?.replace(
+                            /<mark class="cdx-marker">(.*?)<\/mark>/g,
+                            '<mark style="background-color: #ffeb3b; padding: 2px 4px; border-radius: 3px;">$1</mark>'
+                          )
+                          ?.replace(
+                            /<code class="inline-code">(.*?)<\/code>/g,
+                            '<code style="background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: monospace; font-size: 0.9em;">$1</code>'
+                          )
+                          ?.replace(
+                            /<u>(.*?)<\/u>/g,
+                            '<u style="text-decoration: underline;">$1</u>'
+                          ) || itemText,
+                    }}
+                  />
+                );
+              }
+            )}
           </Box>
         );
 
@@ -108,11 +115,11 @@ const EditorJSRenderer: React.FC<EditorJSRendererProps> = ({ data }) => {
             }}
           >
             <Typography variant="body1" sx={{ fontStyle: "italic", mb: 1 }}>
-              {block.data.text}
+              {(block.data as { text?: string }).text}
             </Typography>
-            {block.data.caption && (
+            {(block.data as { caption?: string }).caption && (
               <Typography variant="caption" color="text.secondary">
-                — {block.data.caption}
+                — {(block.data as { caption: string }).caption}
               </Typography>
             )}
           </Paper>
@@ -134,7 +141,7 @@ const EditorJSRenderer: React.FC<EditorJSRendererProps> = ({ data }) => {
             <pre
               style={{ margin: 0, fontFamily: "monospace", fontSize: "14px" }}
             >
-              <code>{block.data.code}</code>
+              <code>{(block.data as { code?: string }).code}</code>
             </pre>
           </Paper>
         );
@@ -144,22 +151,24 @@ const EditorJSRenderer: React.FC<EditorJSRendererProps> = ({ data }) => {
           <Box key={index} sx={{ overflow: "auto", mb: 2 }}>
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <tbody>
-                {block.data.content.map((row: string[], rowIndex: number) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell: string, cellIndex: number) => (
-                      <td
-                        key={cellIndex}
-                        style={{
-                          border: "1px solid #e0e0e0",
-                          padding: "8px",
-                          textAlign: "left",
-                        }}
-                      >
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
+                {(block.data as { content?: string[][] }).content?.map(
+                  (row: string[], rowIndex: number) => (
+                    <tr key={rowIndex}>
+                      {row.map((cell: string, cellIndex: number) => (
+                        <td
+                          key={cellIndex}
+                          style={{
+                            border: "1px solid #e0e0e0",
+                            padding: "8px",
+                            textAlign: "left",
+                          }}
+                        >
+                          {cell}
+                        </td>
+                      ))}
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </Box>
@@ -179,18 +188,25 @@ const EditorJSRenderer: React.FC<EditorJSRendererProps> = ({ data }) => {
             }}
           >
             <Typography variant="h6" sx={{ mb: 1, color: "warning.dark" }}>
-              {block.data.title}
+              {(block.data as { title?: string }).title}
             </Typography>
-            <Typography variant="body1">{block.data.message}</Typography>
+            <Typography variant="body1">
+              {(block.data as { message?: string }).message}
+            </Typography>
           </Paper>
         );
 
       case "image":
+        const imageData = block.data as {
+          file?: { url?: string };
+          url?: string;
+          caption?: string;
+        };
         return (
           <Box key={index} sx={{ mb: 2, textAlign: "center" }}>
             <Image
-              src={block.data.file?.url || block.data.url}
-              alt={block.data.caption || "Image"}
+              src={imageData.file?.url || imageData.url || ""}
+              alt={imageData.caption || "Image"}
               width={800}
               height={400}
               style={{
@@ -200,33 +216,38 @@ const EditorJSRenderer: React.FC<EditorJSRendererProps> = ({ data }) => {
                 boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
               }}
             />
-            {block.data.caption && (
+            {imageData.caption && (
               <Typography
                 variant="caption"
                 color="text.secondary"
                 sx={{ mt: 1, display: "block" }}
               >
-                {block.data.caption}
+                {imageData.caption}
               </Typography>
             )}
           </Box>
         );
 
       case "embed":
+        const embedData = block.data as {
+          embed?: string;
+          html?: string;
+          caption?: string;
+        };
         return (
           <Box key={index} sx={{ mb: 2, textAlign: "center" }}>
             <div
               dangerouslySetInnerHTML={{
-                __html: block.data.embed || block.data.html || "",
+                __html: embedData.embed || embedData.html || "",
               }}
             />
-            {block.data.caption && (
+            {embedData.caption && (
               <Typography
                 variant="caption"
                 color="text.secondary"
                 sx={{ mt: 1, display: "block" }}
               >
-                {block.data.caption}
+                {embedData.caption}
               </Typography>
             )}
           </Box>

@@ -16,9 +16,13 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      Cookies.remove("token");
-      toast.error("Session expired. Please login again.");
-      Router.push("/login");
+      // Only show session expired toast if there's still a token (meaning it wasn't a deliberate logout)
+      const token = Cookies.get("token");
+      if (token) {
+        Cookies.remove("token");
+        toast.error("Session expired. Please login again.");
+        Router.push("/login");
+      }
     }
     return Promise.reject(error);
   }

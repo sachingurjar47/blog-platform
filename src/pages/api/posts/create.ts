@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getDB, saveDB } from "@/lib/db";
 import { verifyToken } from "@/lib/jwt";
 import { v4 as uuidv4 } from "uuid";
-import { EditorJSData } from "@/types/editorjs";
+// import { EditorJSData } from "@/types/editorjs";
 
 /**
  * API route for creating a new post
@@ -75,7 +75,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     const newPost = {
       id: uuidv4(),
       title: sanitizedTitle,
-      content: content as any, // Allow both string and EditorJSData
+      content: content as string | unknown, // Allow both string and EditorJSData
       likes: 0,
       likedBy: [],
       createdBy: userId,
