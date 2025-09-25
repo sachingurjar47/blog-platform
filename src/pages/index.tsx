@@ -126,58 +126,86 @@ const BlogListPage = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      {/* Header Section */}
-      <PageHeader
-        title="Blog Posts"
-        buttonText="Create Post"
-        onButtonClick={handleCreatePost}
-      />
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
 
-      {/* Search Section */}
-      <SearchBar value={search} onChange={setSearch} disabled={isLoading} />
+        height: "calc(100vh - 64px)",
+        overflow: "hidden",
+      }}
+    >
+      {/* Fixed Header Section */}
+      <Box
+        sx={{
+          flexShrink: 0,
+          backgroundColor: "background.default",
+          borderBottom: 1,
+          borderColor: "divider",
+          zIndex: 1,
+        }}
+      >
+        <Container maxWidth="md" sx={{ py: 2 }}>
+          <PageHeader
+            title="Blogs"
+            buttonText="Create Post"
+            onButtonClick={handleCreatePost}
+          />
+          <SearchBar value={search} onChange={setSearch} disabled={isLoading} />
+        </Container>
+      </Box>
 
-      {/* Content Section */}
-      {isLoading && allPosts.length === 0 ? (
-        <LoadingSkeleton count={3} variant="post" />
-      ) : (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {allPosts.length === 0 ? (
-            <NoPostsFound
-              hasSearchQuery={!!debouncedSearch}
-              onCreatePost={handleCreatePost}
-            />
+      {/* Scrollable Content Section */}
+      <Box
+        sx={{
+          flex: 1,
+          overflow: "auto",
+          backgroundColor: "background.default",
+        }}
+      >
+        <Container maxWidth="md" sx={{ py: 2 }}>
+          {isLoading && allPosts.length === 0 ? (
+            <LoadingSkeleton count={3} variant="post" />
           ) : (
-            <>
-              {/* Search Results Info */}
-              <SearchResultsInfo
-                searchQuery={debouncedSearch}
-                totalResults={totalPosts}
-              />
-
-              {/* Posts List */}
-              {allPosts.map((post: Post) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  currentUser={currentUser}
-                  onEdit={handleEditPost}
-                  onDelete={handleDeletePost}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {allPosts.length === 0 ? (
+                <NoPostsFound
+                  hasSearchQuery={!!debouncedSearch}
+                  onCreatePost={handleCreatePost}
                 />
-              ))}
-            </>
-          )}
-        </Box>
-      )}
+              ) : (
+                <>
+                  {/* Search Results Info */}
+                  <SearchResultsInfo
+                    searchQuery={debouncedSearch}
+                    totalResults={totalPosts}
+                  />
 
-      {/* Infinite Scroll Sentinel */}
-      <Box ref={sentinelRef} sx={{ height: 24 }} />
-      {isFetchingNextPage && (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-          <CircularProgress size={20} />
-        </Box>
-      )}
-    </Container>
+                  {/* Posts List */}
+                  {allPosts.map((post: Post) => (
+                    <PostCard
+                      key={post.id}
+                      post={post}
+                      currentUser={currentUser}
+                      onEdit={handleEditPost}
+                      onDelete={handleDeletePost}
+                    />
+                  ))}
+                </>
+              )}
+
+              {/* Infinite Scroll Sentinel */}
+              <Box ref={sentinelRef} sx={{ height: 24 }} />
+              {isFetchingNextPage && (
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                  <CircularProgress size={20} />
+                </Box>
+              )}
+            </Box>
+          )}
+        </Container>
+      </Box>
+    </Box>
   );
 };
 

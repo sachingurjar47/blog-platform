@@ -44,6 +44,7 @@ const SearchBar: React.FC<SearchBarProps> = memo(
         value={value}
         onChange={handleChange}
         disabled={disabled}
+        size="small"
         InputProps={{
           startAdornment: (
             <SearchIcon sx={{ mr: 1, color: "text.secondary" }} />
