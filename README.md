@@ -365,9 +365,34 @@ npm run build
 npm start
 ```
 
+### Deployment Options
+
+#### **Vercel (Recommended)**
+
+1. **Set Environment Variables**:
+
+   - Go to your Vercel project dashboard
+   - Click on "Settings" tab
+   - Go to "Environment Variables" section
+   - Add new variable: `JWT_SECRET` = `your_super_secure_jwt_secret_key_here` (at least 32 characters)
+   - Add new variable: `NODE_ENV` = `production`
+   - Make sure to select "Production" environment for both variables
+
+2. **Deploy**:
+   ```bash
+   npm run build
+   vercel --prod
+   ```
+
+#### **Other Platforms**
+
+- **Netlify**: Alternative deployment platform
+- **Docker**: Containerized deployment
+- **Traditional Hosting**: Any Node.js hosting service
+
 ### Environment Setup
 
-1. **Required**: Set `JWT_SECRET` environment variable
+1. **Required**: Set `JWT_SECRET` environment variable in your deployment platform
 2. **Database**: Uses in-memory storage (no additional setup needed)
 3. **Optional**: Configure custom domain and SSL certificates
 
