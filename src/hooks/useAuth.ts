@@ -85,6 +85,8 @@ export const useLogin = () => {
         sameSite: "strict",
       });
 
+      console.log("Token set in cookies:", data.token);
+
       // Invalidate and refetch auth data
       queryClient.invalidateQueries({ queryKey: ["auth"] });
       // Force refetch the auth data to get updated user info
@@ -111,8 +113,17 @@ export const useAuthCheck = () => {
   return useQuery<AuthResponse, ApiError>({
     queryKey: ["auth"],
     queryFn: async () => {
-      const res = await api.get("/auth-check");
-      return res.data;
+      try {
+        const res = await api.get("/auth-check");
+        return res.data;
+      } catch (error: any) {
+        // Handle 401 responses as valid data (user not authenticated)
+        if (error?.response?.status === 401) {
+          return error.response.data as AuthResponse;
+        }
+        // Re-throw other errors
+        throw error;
+      }
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes

@@ -1,4 +1,13 @@
 {
-  "users": [],
+  "users": [
+    {
+      "id": "18f25138-6975-4d5a-a159-3bb48729c521",
+      "email": "test@example.com",
+      "password": "password123",
+      "name": "Test User",
+      "createdAt": "2025-09-25T05:53:32.170Z",
+      "updatedAt": "2025-09-25T05:53:32.170Z"
+    }
+  ],
   "posts": []
 }

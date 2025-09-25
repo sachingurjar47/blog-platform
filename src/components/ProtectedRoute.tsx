@@ -11,8 +11,14 @@ const ProtectedRoute = ({ children }: Props) => {
   const { data: authData, isLoading } = useAuthCheck();
   const authenticated = authData?.authenticated;
 
+  console.log("ProtectedRoute - authenticated:", authenticated, "pathname:", router.pathname);
+
   useEffect(() => {
-    if (authenticated === false) router.push("/login");
+    // Only redirect if we're not already on the login page to prevent infinite loops
+    if (authenticated === false && router.pathname !== "/login") {
+      console.log("Redirecting to login page");
+      router.push("/login");
+    }
   }, [authenticated, router]);
 
   if (isLoading || authenticated === undefined) return <div>Loading...</div>;

@@ -33,6 +33,7 @@ const LoginPage = () => {
       await loginSchema.validate({ email, password }, { abortEarly: false });
 
       await loginMutation.mutateAsync({ email, password });
+      console.log("Login successful, redirecting to home page");
       router.push("/");
     } catch (error: unknown) {
       if (
@@ -60,6 +61,10 @@ const LoginPage = () => {
         if (apiError.response?.data?.errors) {
           setTouched({ email: true, password: true });
           setErrors(apiError.response.data.errors);
+        } else if (apiError.response?.data?.message) {
+          // Handle general API errors (like "Invalid credentials")
+          setTouched({ email: true, password: true });
+          setErrors({ general: apiError.response.data.message });
         }
       }
     }
@@ -115,6 +120,20 @@ const LoginPage = () => {
             flexDirection="column"
             gap={2}
           >
+            {errors.general && (
+              <Box
+                sx={{
+                  color: "error.main",
+                  fontSize: "0.875rem",
+                  textAlign: "center",
+                  p: 1,
+                  bgcolor: "error.light",
+                  borderRadius: 1,
+                }}
+              >
+                {errors.general}
+              </Box>
+            )}
             <TextField
               label="Email"
               placeholder="Enter email"
