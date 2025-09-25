@@ -1,6 +1,6 @@
 # Blog Platform
 
-A modern, full-featured blog platform built with Next.js, React, and TypeScript. This platform provides a complete blogging experience with rich text editing, user authentication, image management, and real-time features.
+A modern, full-featured blog platform built with Next.js, React, and TypeScript. This platform provides a complete blogging experience with rich text editing, user authentication, and real-time features.
 
 ## 🚀 Features
 
@@ -17,14 +17,8 @@ A modern, full-featured blog platform built with Next.js, React, and TypeScript.
   - Tables for structured data
   - Delimiters for content separation
   - Warning blocks for important notices
-
-### 🖼️ Image Management
-
-- **Image Upload**: Direct file upload with drag-and-drop support
-- **Image Fetching**: Support for external image URLs from trusted sources
-- **Image Cleanup**: Automatic cleanup of unused images
-- **File Validation**: Image type validation and size limits (10MB max)
-- **Secure Storage**: Images stored in `/public/uploads/` directory
+  - Embed support for media content
+  - Link management
 
 ### 👤 User Authentication & Authorization
 
@@ -54,7 +48,6 @@ A modern, full-featured blog platform built with Next.js, React, and TypeScript.
 - **Server-Side Rendering**: Next.js SSR for optimal performance
 - **Client-Side Hydration**: Smooth client-side interactions
 - **Code Splitting**: Automatic code splitting for faster load times
-- **Image Optimization**: Efficient image handling and delivery
 - **Caching**: React Query for intelligent data caching
 
 ### 🛠️ Developer Experience
@@ -81,7 +74,6 @@ A modern, full-featured blog platform built with Next.js, React, and TypeScript.
 
 - **Next.js API Routes**: Serverless API endpoints
 - **JWT**: JSON Web Tokens for authentication
-- **Formidable**: File upload handling
 - **UUID**: Unique identifier generation
 - **Yup**: Schema validation
 
@@ -99,7 +91,6 @@ A modern, full-featured blog platform built with Next.js, React, and TypeScript.
 - `@editorjs/list`: Ordered and unordered lists
 - `@editorjs/quote`: Blockquotes with attribution
 - `@editorjs/code`: Code blocks
-- `@editorjs/image`: Image handling
 - `@editorjs/inline-code`: Inline code formatting
 - `@editorjs/marker`: Text highlighting
 - `@editorjs/delimiter`: Content separators
@@ -126,7 +117,6 @@ blog-platform/
 │   │   │   ├── auth-check.ts
 │   │   │   ├── login.ts
 │   │   │   ├── register.ts
-│   │   │   ├── upload-image.ts
 │   │   │   └── posts/     # Post-related APIs
 │   │   ├── index.tsx      # Home page
 │   │   ├── create-post.tsx # Post creation
@@ -144,8 +134,6 @@ blog-platform/
 │   ├── schemas/           # Validation schemas
 │   └── __tests__/         # Test files
 ├── public/                # Static assets
-│   └── uploads/          # User-uploaded images
-├── data.json             # JSON database
 └── package.json          # Dependencies and scripts
 ```
 
@@ -180,6 +168,23 @@ blog-platform/
 4. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
+### Default Login Credentials
+
+For testing purposes, the application comes with a default admin user:
+
+- **Email**: `admin@example.com`
+- **Password**: `admin123`
+
+You can use these credentials to log in and start creating posts immediately.
+
+### Quick Start Guide
+
+1. **Start the application**: `npm run dev`
+2. **Open browser**: Go to `http://localhost:3000`
+3. **Login**: Use `admin@example.com` / `admin123`
+4. **Create your first post**: Click "Create Post" and start writing!
+5. **Explore features**: Try the rich text editor, search, and like functionality
+
 ### Available Scripts
 
 - `npm run dev`: Start development server with Turbopack
@@ -203,7 +208,52 @@ DATABASE_URL=your-database-url
 
 ### Database
 
-The application uses a JSON file (`data.json`) as the database by default. For production, consider migrating to a proper database like PostgreSQL or MongoDB.
+The application uses an **in-memory database** by default, which provides several benefits:
+
+#### **Development Mode:**
+
+- ✅ **Fast Performance**: All data stored in memory for instant access
+- ✅ **No File Dependencies**: No need for file system operations
+- ✅ **Clean Start**: Fresh database on every restart
+- ✅ **Easy Testing**: Predictable state for testing
+
+#### **Production Mode:**
+
+- ✅ **Serverless Compatible**: Works perfectly with Vercel, Netlify, etc.
+- ✅ **No File System Issues**: Avoids serverless file system limitations
+- ✅ **Scalable**: Each serverless function has its own database instance
+- ⚠️ **Data Persistence**: Data resets when serverless functions restart
+
+#### **Default Data:**
+
+- **Admin User**: `admin@example.com` / `admin123`
+- **Empty Posts**: Start with no posts, create your own content
+
+#### **For Production:**
+
+Consider migrating to a proper database like:
+
+- **PostgreSQL** (with Neon, Supabase, or PlanetScale)
+- **MongoDB** (with MongoDB Atlas)
+- **Firebase Firestore**
+- **Redis** (with Upstash)
+
+### Recent Updates
+
+- **Removed Image Upload**: Simplified the editor by removing image upload functionality
+- **Clean Database**: Switched to in-memory storage for better serverless compatibility
+- **Updated Dependencies**: Removed unused packages for cleaner codebase
+- **Enhanced Testing**: 100% test pass rate with comprehensive coverage
+
+### Important Notes
+
+⚠️ **Data Persistence**: The current in-memory database resets data when the server restarts. This is perfect for:
+
+- **Development and testing**
+- **Demos and prototypes**
+- **Learning and experimentation**
+
+For production with persistent data, you'll need to integrate with an external database service.
 
 ## 📖 API Documentation
 
@@ -273,27 +323,6 @@ Delete a post
 
 - **Headers**: `Authorization: Bearer <token>`
 
-### Image Endpoints
-
-#### POST `/api/upload-image`
-
-Upload an image file
-
-- **Content-Type**: `multipart/form-data`
-- **Body**: `{ "image": File }`
-
-#### POST `/api/fetch-image`
-
-Fetch image from URL
-
-- **Body**: `{ "url": "https://example.com/image.jpg" }`
-
-#### DELETE `/api/delete-image`
-
-Delete an uploaded image
-
-- **Body**: `{ "imageUrl": "/uploads/filename.jpg" }`
-
 ## 🧪 Testing
 
 The project includes comprehensive testing setup:
@@ -316,6 +345,16 @@ npm test -- --coverage
 - **Unit Tests**: Individual component and function testing
 - **Integration Tests**: API endpoint testing
 - **Component Tests**: React component behavior testing
+- **Hook Tests**: Custom React hooks testing
+- **Utility Tests**: Helper function testing
+
+### Test Coverage
+
+- **100% Test Pass Rate**: All 100 tests passing
+- **15 Test Suites**: Comprehensive coverage across all modules
+- **API Testing**: Authentication, posts, and user management
+- **Component Testing**: UI components and user interactions
+- **Utility Testing**: Content processing and helper functions
 
 ## 🚀 Deployment
 

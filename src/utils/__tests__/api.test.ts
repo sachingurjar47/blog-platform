@@ -27,11 +27,11 @@ describe("api", () => {
   });
 
   it("has expected structure", () => {
-    expect(api).toHaveProperty("defaults");
-    expect(api).toHaveProperty("interceptors");
-    expect(api).toHaveProperty("get");
-    expect(api).toHaveProperty("post");
-    expect(api).toHaveProperty("put");
-    expect(api).toHaveProperty("delete");
+    expect(api.default).toHaveProperty("defaults");
+    expect(api.default).toHaveProperty("interceptors");
+    expect(api.default).toHaveProperty("get");
+    expect(api.default).toHaveProperty("post");
+    expect(api.default).toHaveProperty("put");
+    expect(api.default).toHaveProperty("delete");
   });
 });

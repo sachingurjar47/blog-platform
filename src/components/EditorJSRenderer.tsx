@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Typography, Paper, Divider } from "@mui/material";
-import Image from "next/image";
 import { EditorJSData } from "../types/editorjs";
 
 interface EditorJSRendererProps {
@@ -196,37 +195,6 @@ const EditorJSRenderer: React.FC<EditorJSRendererProps> = ({ data }) => {
           </Paper>
         );
 
-      case "image":
-        const imageData = block.data as {
-          file?: { url?: string };
-          url?: string;
-          caption?: string;
-        };
-        return (
-          <Box key={index} sx={{ mb: 2, textAlign: "center" }}>
-            <Image
-              src={imageData.file?.url || imageData.url || ""}
-              alt={imageData.caption || "Image"}
-              width={800}
-              height={400}
-              style={{
-                maxWidth: "100%",
-                height: "auto",
-                borderRadius: "8px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              }}
-            />
-            {imageData.caption && (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ mt: 1, display: "block" }}
-              >
-                {imageData.caption}
-              </Typography>
-            )}
-          </Box>
-        );
 
       case "embed":
         const embedData = block.data as {

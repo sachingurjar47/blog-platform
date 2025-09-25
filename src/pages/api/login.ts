@@ -2,7 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getDB } from "../../lib/db";
 import { signToken } from "../../lib/jwt";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "POST") return res.status(405).end();
 
   const { email, password } = req.body || {};
@@ -30,7 +33,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     });
   }
 
-  const db = getDB();
+  const db = await getDB();
   console.log("Database users:", db.users);
   console.log("Looking for user with email:", email, "and password:", password);
   const user = db.users.find(

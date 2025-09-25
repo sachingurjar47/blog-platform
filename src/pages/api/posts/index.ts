@@ -14,7 +14,10 @@ import { extractTextContent } from "@/utils/contentUtils";
  * - Error handling
  */
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   // Only allow GET requests
   if (req.method !== "GET") {
     return res.status(405).json({
@@ -44,7 +47,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     );
     const search = (req.query.search as string) || "";
 
-    const db = getDB();
+    const db = await getDB();
 
     // Create user lookup map for efficient creator resolution
     const userMap = new Map(db.users.map((user) => [user.id, user]));

@@ -8,7 +8,10 @@ function getUserFromToken(token?: string) {
   return decoded || null;
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const auth = req.headers.authorization;
   const token = auth?.split(" ")[1] || req.cookies?.token;
   const user = getUserFromToken(token);
@@ -16,7 +19,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!user) return res.status(401).json({ message: "Unauthorized" });
 
   const { id } = req.query;
-  const db = getDB();
+  const db = await getDB();
   const post = db.posts.find((p) => p.id === String(id));
   if (!post) return res.status(404).json({ message: "Not found" });
 
@@ -47,7 +50,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (content) post.content = content;
     post.updatedAt = new Date().toISOString();
 
-    saveDB(db);
+    await saveDB(db);
     return res.status(200).json(post);
   } else if (req.method === "DELETE") {
     if (post.createdBy !== (user as { id: string }).id) {
@@ -57,7 +60,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     db.posts = db.posts.filter((p) => p.id !== String(id));
-    saveDB(db);
+    await saveDB(db);
     return res.status(200).json({ message: "Post deleted successfully" });
   } else if (req.method === "POST") {
     const userId = (user as { id: string }).id;
@@ -71,7 +74,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       post.likes++;
     }
 
-    saveDB(db);
+    await saveDB(db);
     return res.status(200).json({
       ...post,
       isLiked: !isLiked,

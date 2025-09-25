@@ -13,7 +13,10 @@ import { v4 as uuidv4 } from "uuid";
  * - Error handling
  * - Type safety
  */
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   // Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -68,7 +71,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     const sanitizedTitle = title.trim().substring(0, 200); // Limit title length
 
     // Get database and create new post
-    const db = getDB();
+    const db = await getDB();
     const now = new Date().toISOString();
     const userId = (decoded as { id: string }).id;
 
@@ -85,7 +88,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // Add post to database
     db.posts.push(newPost);
-    saveDB(db);
+    await saveDB(db);
 
     // Return created post
     return res.status(201).json({

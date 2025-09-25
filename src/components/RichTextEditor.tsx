@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Box, Typography } from "@mui/material";
 import { EditorJSData } from "../types/editorjs";
-import { trackUploadedImage } from "../utils/imageCleanup";
 
 // EditorJS type definitions
 interface EditorJS {
@@ -81,7 +80,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           { default: Paragraph },
           { default: Quote },
           { default: Code },
-          { default: Image },
           { default: InlineCode },
           { default: Marker },
           { default: Delimiter },
@@ -93,7 +91,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           import("@editorjs/paragraph"),
           import("@editorjs/quote"),
           import("@editorjs/code"),
-          import("@editorjs/image"),
           import("@editorjs/inline-code"),
           import("@editorjs/marker"),
           import("@editorjs/delimiter"),
@@ -141,67 +138,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               class: Code as EditorJSToolClass,
               config: {
                 placeholder: "Enter code",
-              },
-            },
-            image: {
-              class: Image as EditorJSToolClass,
-              config: {
-                endpoints: {
-                  byFile: "/api/upload-image",
-                  byUrl: "/api/fetch-image",
-                },
-                field: "image",
-                types: "image/*",
-                additionalRequestData: {},
-                additionalRequestHeaders: {},
-                captionPlaceholder: "Enter image caption",
-                buttonContent: "Select an image",
-                uploader: {
-                  uploadByFile: async (file: File) => {
-                    const formData = new FormData();
-                    formData.append("image", file);
-
-                    try {
-                      const response = await fetch("/api/upload-image", {
-                        method: "POST",
-                        body: formData,
-                      });
-                      const result = await response.json();
-
-                      // Track uploaded image for cleanup
-                      if (result.success === 1 && result.file?.url) {
-                        trackUploadedImage(result.file.url);
-                      }
-
-                      return result;
-                    } catch (error) {
-                      console.error("Image upload error:", error);
-                      return {
-                        success: 0,
-                        message: "Image upload failed",
-                      };
-                    }
-                  },
-                  uploadByUrl: async (url: string) => {
-                    try {
-                      const response = await fetch("/api/fetch-image", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ url }),
-                      });
-                      const result = await response.json();
-                      return result;
-                    } catch (error) {
-                      console.error("Image fetch error:", error);
-                      return {
-                        success: 0,
-                        message: "Image fetch failed",
-                      };
-                    }
-                  },
-                },
               },
             },
             inlineCode: {
