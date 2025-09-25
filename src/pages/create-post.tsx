@@ -11,10 +11,6 @@ import {
 } from "@mui/material";
 import RichTextEditor from "../components/RichTextEditor";
 import { EditorJSData } from "../types/editorjs";
-import {
-  cleanupUploadedImages,
-  clearUploadedImages,
-} from "../utils/imageCleanup";
 import { postSchema } from "../schemas/validation";
 
 const CreatePostPage = () => {
@@ -43,8 +39,7 @@ const CreatePostPage = () => {
         title: title.trim(),
         content: content!,
       });
-      // Clear uploaded images tracking since post was successfully created
-      clearUploadedImages();
+
       router.push("/");
     } catch (error: unknown) {
       if (
@@ -97,20 +92,8 @@ const CreatePostPage = () => {
   };
 
   const handleCancel = useCallback(async () => {
-    // Clean up any uploaded images before navigating away
-    await cleanupUploadedImages();
     router.back();
   }, [router]);
-
-  // Clean up images when component unmounts (user navigates away)
-  useEffect(() => {
-    return () => {
-      // Only cleanup if the post wasn't successfully created
-      if (!createPostMutation.isSuccess) {
-        cleanupUploadedImages();
-      }
-    };
-  }, [createPostMutation.isSuccess]);
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
